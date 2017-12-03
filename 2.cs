@@ -1,6 +1,6 @@
 using System;
 
-public class DayOne
+public class DayTwo
 {
     private static int partOne(string[] lines)
     {
@@ -51,7 +51,6 @@ public class DayOne
                 {
                     if (dividend % divisor == 0)
                     {
-                        Console.WriteLine("{0} {1}", dividend, divisor);
                         checksum += dividend / divisor;
                         break;
                     }
