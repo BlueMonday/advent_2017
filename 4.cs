@@ -34,18 +34,20 @@ public class DayFour
     }
 
     private static bool validPassphraseAmended(string passphrase) {
-        HashSet<HashSet<char>> usedCharSets = new HashSet<HashSet<char>>(HashSet<char>.CreateSetComparer());
+        HashSet<string> usedSortedWords = new HashSet<string>();
 
         string[] words = passphrase.Split(null);
         foreach(string word in words)
         {
-            HashSet<char> charSet = new HashSet<char>(word.ToCharArray());
-            if (usedCharSets.Contains(charSet))
+            char[] wordChars = word.ToCharArray();
+            Array.Sort(wordChars);
+            string sortedWord = new string(wordChars);
+            if (usedSortedWords.Contains(sortedWord))
             {
                 return false;
             }
 
-            usedCharSets.Add(charSet);
+            usedSortedWords.Add(sortedWord);
         }
 
         return true;
