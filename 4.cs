@@ -4,20 +4,20 @@ using System.Collections.Generic;
 public class DayFour
 {
     private static bool validPassphrase(string passphrase) {
-            HashSet<string> usedWords = new HashSet<string>();
+        HashSet<string> usedWords = new HashSet<string>();
 
-            string[] words = passphrase.Split(null);
-            foreach(string word in words)
+        string[] words = passphrase.Split(null);
+        foreach(string word in words)
+        {
+            if (usedWords.Contains(word))
             {
-                if (usedWords.Contains(word))
-                {
-                    return false;
-                }
-
-                usedWords.Add(word);
+                return false;
             }
 
-            return true;
+            usedWords.Add(word);
+        }
+
+        return true;
     }
 
     private static int partOne(string[] passphrases)
@@ -34,25 +34,21 @@ public class DayFour
     }
 
     private static bool validPassphraseAmended(string passphrase) {
-            List<HashSet<char>> usedCharSets = new List<HashSet<char>>();
+        HashSet<HashSet<char>> usedCharSets = new HashSet<HashSet<char>>(HashSet<char>.CreateSetComparer());
 
-            string[] words = passphrase.Split(null);
-            foreach(string word in words)
+        string[] words = passphrase.Split(null);
+        foreach(string word in words)
+        {
+            HashSet<char> charSet = new HashSet<char>(word.ToCharArray());
+            if (usedCharSets.Contains(charSet))
             {
-                HashSet<char> charSet = new HashSet<char>(word.ToCharArray());
-
-                foreach(HashSet<char> usedCharSet in usedCharSets)
-                {
-                    if (usedCharSet.SetEquals(charSet))
-                    {
-                        return false;
-                    }
-                }
-
-                usedCharSets.Add(charSet);
+                return false;
             }
 
-            return true;
+            usedCharSets.Add(charSet);
+        }
+
+        return true;
     }
 
     private static int partTwo(string [] passphrases)
