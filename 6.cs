@@ -26,16 +26,13 @@ public class DaySix
         }
     }
 
-    private static int partOne(int[] banks)
+    private static int numberOfRedistributionsUntilDuplicate(int[] banks)
     {
         int numRedistributions = 0;
         HashSet<string> seenConfigurations = new HashSet<string>();
 
         while(true)
         {
-            redistribute(banks);
-            numRedistributions++;
-
             string[] stringBanks = Array.ConvertAll(banks, Convert.ToString);
             string configuration = String.Join("", stringBanks);
             if (seenConfigurations.Contains(configuration))
@@ -44,41 +41,9 @@ public class DaySix
             }
 
             seenConfigurations.Add(configuration);
-        }
-    }
 
-    private static int partTwo(int[] banks)
-    {
-        int numRedistributions = 0;
-        string duplicateConfiguration = "";
-        HashSet<string> seenConfigurations = new HashSet<string>();
-
-        while(true)
-        {
             redistribute(banks);
             numRedistributions++;
-
-            string[] stringBanks = Array.ConvertAll(banks, Convert.ToString);
-            string configuration = String.Join("", stringBanks);
-            if (duplicateConfiguration.Length != 0)
-            {
-                if (configuration.Equals(duplicateConfiguration))
-                {
-                    return numRedistributions;
-                }
-            }
-            else
-            {
-                if (seenConfigurations.Contains(configuration))
-                {
-                    duplicateConfiguration = configuration;
-                    numRedistributions = 0;
-                }
-                else
-                {
-                    seenConfigurations.Add(configuration);
-                }
-            }
         }
     }
 
@@ -95,8 +60,8 @@ public class DaySix
 
         string[] stringBanks = lines[0].Split(null);
         int[] banks = Array.ConvertAll(stringBanks, int.Parse);
-        Console.WriteLine(partOne(banks));
-        Console.WriteLine(partTwo(banks));
+        Console.WriteLine(numberOfRedistributionsUntilDuplicate(banks));
+        Console.WriteLine(numberOfRedistributionsUntilDuplicate(banks));
         return 0;
     }
 }
