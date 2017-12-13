@@ -35,9 +35,8 @@ public class DayTwelve
         return neighbors;
     }
 
-    private static int countConnected(int programID, HashSet<int> visited, Dictionary<int, HashSet<int>> neighbors)
+    private static void visitConnected(int programID, HashSet<int> visited, Dictionary<int, HashSet<int>> neighbors)
     {
-        int count = 1;
         visited.Add(programID);
         foreach(int connectedProgram in neighbors[programID])
         {
@@ -47,17 +46,16 @@ public class DayTwelve
             }
 
             visited.Add(connectedProgram);
-            count += countConnected(connectedProgram, visited, neighbors);
+            visitConnected(connectedProgram, visited, neighbors);
         }
-
-        return count;
     }
 
     private static int partOne(string[] lines)
     {
         var neighbors = parseNeighbors(lines);
         var visited = new HashSet<int>{};
-        return countConnected(0, visited, neighbors);
+        visitConnected(0, visited, neighbors);
+        return visited.Count;
     }
 
     private static int partTwo(string[] lines)
@@ -70,7 +68,7 @@ public class DayTwelve
         {
             if (!visited.Contains(entry.Key))
             {
-                countConnected(entry.Key, visited, neighbors);
+                visitConnected(entry.Key, visited, neighbors);
                 groups++;
             }
         }
