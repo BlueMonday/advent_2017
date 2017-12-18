@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-public class DayFifteen
+public class DaySeventeen
 {
     private const int numValues = 2018;
     private const long numValues2 = 50000001;
