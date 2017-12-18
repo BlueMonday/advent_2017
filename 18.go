@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 )
 
 const queueSize = 1000
@@ -33,13 +34,8 @@ type Program struct {
 	id      int
 	sndChan chan<- int
 	rcvChan <-chan int
-	otherP  *Program
-
-	receivingMutex sync.RWMutex
-	receiving      bool
 
 	registers Registers
-	stop      chan struct{}
 }
 
 func NewProgram(id int, sndChan chan<- int, rcvChan <-chan int) *Program {
@@ -51,7 +47,6 @@ func NewProgram(id int, sndChan chan<- int, rcvChan <-chan int) *Program {
 		sndChan:   sndChan,
 		rcvChan:   rcvChan,
 		registers: registers,
-		stop:      make(chan struct{}),
 	}
 }
 
@@ -62,17 +57,6 @@ func (p *Program) getValue(s string) int {
 	}
 
 	return v
-}
-
-func (p *Program) SetOtherProgram(otherP *Program) {
-	p.otherP = otherP
-}
-
-func (p *Program) Receiving() bool {
-	p.receivingMutex.RLock()
-	b := p.receiving
-	p.receivingMutex.RUnlock()
-	return b
 }
 
 func (p *Program) Run(instructions []string, wg *sync.WaitGroup) {
@@ -101,25 +85,12 @@ func (p *Program) Run(instructions []string, wg *sync.WaitGroup) {
 			v := p.getValue(parts[2])
 			p.registers.Set(parts[1], p.registers.Get(parts[1])%v)
 		case "rcv":
-			if len(p.rcvChan) == 0 && len(p.sndChan) == 0 && p.otherP.Receiving() {
-				p.otherP.Stop()
-				return
-			}
-
-			p.receivingMutex.Lock()
-			p.receiving = true
-			p.receivingMutex.Unlock()
-
 			var v int
 			select {
 			case v = <-p.rcvChan:
-			case <-p.stop:
+			case <-time.After(2 * time.Second):
 				return
 			}
-
-			p.receivingMutex.Lock()
-			p.receiving = false
-			p.receivingMutex.Unlock()
 
 			p.registers.Set(parts[1], v)
 		case "jgz":
@@ -136,10 +107,6 @@ func (p *Program) Run(instructions []string, wg *sync.WaitGroup) {
 			return
 		}
 	}
-}
-
-func (p *Program) Stop() {
-	close(p.stop)
 }
 
 func main() {
@@ -164,8 +131,6 @@ func main() {
 
 	program0 := NewProgram(0, c1, c2)
 	program1 := NewProgram(1, c2, c1)
-	program0.SetOtherProgram(program1)
-	program1.SetOtherProgram(program0)
 	go program0.Run(instructions, wg)
 	go program1.Run(instructions, wg)
 
