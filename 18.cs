@@ -112,7 +112,6 @@ public class DayEighteen
         string[] lines = System.IO.File.ReadAllLines(inputFile);
 
         Console.WriteLine(partOne(lines));
-        Console.WriteLine(partTwo());
         return 0;
     }
 }
