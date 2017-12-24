@@ -75,7 +75,7 @@ public class DayTwentyThree
         return numMul;
     }
 
-    private static int partTwo(string[] lines)
+    private static int partTwo()
     {
         int b = 0;
         int c = 0;
@@ -118,7 +118,7 @@ public class DayTwentyThree
         string[] lines = System.IO.File.ReadAllLines(inputFile);
 
         Console.WriteLine(partOne(lines));
-        Console.WriteLine(partTwo(lines));
+        Console.WriteLine(partTwo());
         return 0;
     }
 }
