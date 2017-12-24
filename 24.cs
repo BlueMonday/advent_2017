@@ -28,6 +28,17 @@ public struct Result
 
 public class DayTwentyFour
 {
+    private static List<Component> parseComponents(string[] lines)
+    {
+        var components = new List<Component>();
+        foreach (string line in lines)
+        {
+            var parts = line.Split('/');
+            components.Add(new Component(int.Parse(parts[0]), int.Parse(parts[1])));
+        }
+        return components;
+    }
+
     private static int strongestBridge(int v, List<Component> components)
     {
         if (components.Count == 0)
@@ -114,94 +125,16 @@ public class DayTwentyFour
         return bestResult;
     }
 
-    private static List<Component> parseComponents(string[] lines)
-    {
-        var components = new List<Component>();
-        foreach (string line in lines)
-        {
-            var parts = line.Split('/');
-            components.Add(new Component(int.Parse(parts[0]), int.Parse(parts[1])));
-        }
-        return components;
-    }
-
     private static int partOne(string[] lines)
     {
         var components = parseComponents(lines);
-
-        int strongest = 0;
-        foreach (var component in components)
-        {
-            if (component.a == 0)
-            {
-                var newComponents = new List<Component>(components);
-                newComponents.Remove(component);
-
-                int strength = component.b + strongestBridge(component.b, newComponents);
-                if (strength > strongest)
-                {
-                    strongest = strength;
-                }
-            }
-            else if (component.b == 0)
-            {
-                var newComponents = new List<Component>(components);
-                newComponents.Remove(component);
-
-                int strength = component.a + strongestBridge(component.a, newComponents);
-                if (strength > strongest)
-                {
-                    strongest = strength;
-                }
-            }
-        }
-
-        return strongest;
+        return strongestBridge(0, components);
     }
 
     private static int partTwo(string[] lines)
     {
         var components = parseComponents(lines);
-
-        var bestResult = new Result(0, 0);
-        foreach (var component in components)
-        {
-            if (component.a == 0)
-            {
-                var newComponents = new List<Component>(components);
-                newComponents.Remove(component);
-
-                var result = longestStrongestBridge(component.b, newComponents);
-                result.length += 1;
-                result.strength += component.b;
-                if (result.length > bestResult.length)
-                {
-                    bestResult = result;
-                }
-                else if (result.length == bestResult.length && result.strength > bestResult.strength)
-                {
-                    bestResult = result;
-                }
-            }
-            else if (component.b == 0)
-            {
-                var newComponents = new List<Component>(components);
-                newComponents.Remove(component);
-
-                var result = longestStrongestBridge(component.a, newComponents);
-                result.length += 1;
-                result.strength += component.a;
-                if (result.length > bestResult.length)
-                {
-                    bestResult = result;
-                }
-                else if (result.length == bestResult.length && result.strength > bestResult.strength)
-                {
-                    bestResult = result;
-                }
-            }
-        }
-
+        var bestResult = longestStrongestBridge(0, components);
         return bestResult.strength;
     }
 
